@@ -1,6 +1,3 @@
-# README.md
-
-```markdown
 # 🏆 Terraform CTF Challenge Solutions
 
 > **A comprehensive, production-ready Terraform project demonstrating best practices through gamified learning**
@@ -858,4 +855,3 @@ Ready to begin? Follow these steps:
 Made with ❤️ and Terraform
 
 </div>
-```
