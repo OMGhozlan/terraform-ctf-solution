@@ -1,6 +1,11 @@
 # ============================================================================
 # CTF Challenge Solutions - Main Configuration
 # ============================================================================
+# This configuration follows the CTF paradigm:
+# 1. Complete challenge requirements
+# 2. Submit proof of work
+# 3. Capture the flag as your reward!
+# ============================================================================
 
 # Provider Configuration
 provider "ctfchallenge" {

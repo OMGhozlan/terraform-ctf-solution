@@ -1,184 +1,74 @@
-# Step-by-Step Guide: Solving Your First Challenge
+# Complete Walkthrough: Capturing Your First Flag
 
-## Challenge 1: Terraform Basics (100 points)
-
-This is the simplest challenge - perfect for beginners!
-
----
+This guide walks you through solving **Challenge 1: Terraform Basics** step-by-step, from initial setup to capturing your first flag! 🏴
 
 ## 📋 Prerequisites
 
 Before starting, ensure you have:
-- ✅ Terraform installed
-- ✅ The CTF provider installed
-- ✅ Your `terraform.tfvars` configured
+- ✅ Terraform installed (version 1.0+)
+- ✅ Basic command line knowledge
+- ✅ A text editor
 
----
-
-## 🎯 Understanding the Challenge
-
-### What You Need to Do:
-Create **at least 3 resources** with **explicit dependencies** using `depends_on`.
-
-### What You'll Learn:
-- How Terraform manages resource dependencies
-- How to control execution order
-- How `depends_on` works
-
-### The Flag:
-```
-flag{t3rr4f0rm_d3p3nd3nc13s}
-```
-
-### Proof of Work:
-You need to provide a comma-separated list of resource IDs showing your dependency chain.
-
----
-
-## 🚀 Step-by-Step Solution
-
-### Step 1: Set Up Your Environment
-
-**Navigate to your project directory:**
-```bash
-cd terraform-ctf-starter  # or your project directory
-```
-
-**Verify Terraform is installed:**
+Check your Terraform version:
 ```bash
 terraform version
+# Should output: Terraform v1.x.x or higher
 ```
 
-**Create your `terraform.tfvars` file** (if you haven't already):
+## 🎯 Challenge Overview
+
+**Challenge:** Terraform Basics  
+**Difficulty:** Beginner  
+**Points:** 100  
+**Objective:** Understand resource dependencies and execution order  
+
+**What you'll learn:**
+- Creating Terraform resources
+- Using `depends_on` to control execution order
+- Submitting proof of work
+- Capturing flags as rewards
+
+---
+
+## Step 1: Initial Setup
+
+### 1.1 Create Your Workspace
+
 ```bash
-cp terraform.tfvars.example terraform.tfvars
+# Create a new directory for your CTF challenge
+mkdir terraform-ctf-my-first-flag
+cd terraform-ctf-my-first-flag
 ```
 
-**Edit `terraform.tfvars`:**
-```hcl
-player_name = "YourName"  # Replace with your actual name
+### 1.2 Create Basic Configuration Files
 
-enable_challenges = {
-  terraform_basics      = true   # Make sure this is enabled
-  expression_expert     = false  # Disable others for now
-  state_secrets         = false
-  module_master         = false
-  dynamic_blocks        = false
-  for_each_wizard       = false
-  data_source_detective = false
-  cryptographic_compute = false
-}
-```
-
----
-
-### Step 2: Create Your Solution File
-
-**Create or edit:** `solutions/challenge-01-terraform-basics.tf`
-
-Here's the complete solution with detailed comments:
+Create a `versions.tf` file:
 
 ```hcl
-# ============================================================================
-# Challenge 1: Terraform Basics - SOLUTION
-# ============================================================================
+# versions.tf
+terraform {
+  required_version = ">= 1.0"
 
-# ----------------------------------------------------------------------------
-# Step 1: Create the FIRST resource in the dependency chain
-# ----------------------------------------------------------------------------
-# This resource has NO dependencies - it will be created first
-resource "null_resource" "step_1_foundation" {
-  # The triggers block forces Terraform to track changes
-  triggers = {
-    timestamp = timestamp()  # Current timestamp
-    step      = "foundation" # A label for this step
-    order     = 1           # This is step 1
+  required_providers {
+    ctfchallenge = {
+      source  = "omghozlan/ctfchallenge"
+      version = "~> 1.0"
+    }
   }
-
-  # Optional: This command runs when the resource is created
-  provisioner "local-exec" {
-    command = "echo 'Step 1: Foundation laid'"
-  }
-}
-
-# ----------------------------------------------------------------------------
-# Step 2: Create the SECOND resource that depends on the first
-# ----------------------------------------------------------------------------
-# This resource MUST wait for step_1_foundation to complete
-resource "null_resource" "step_2_framework" {
-  # This is the KEY: depends_on creates an explicit dependency
-  depends_on = [null_resource.step_1_foundation]
-
-  triggers = {
-    timestamp = timestamp()
-    step      = "framework"
-    order     = 2  # This is step 2
-  }
-
-  provisioner "local-exec" {
-    command = "echo 'Step 2: Framework built on foundation'"
-  }
-}
-
-# ----------------------------------------------------------------------------
-# Step 3: Create the THIRD resource that depends on the second
-# ----------------------------------------------------------------------------
-# This resource MUST wait for step_2_framework to complete
-resource "null_resource" "step_3_completion" {
-  # This depends on the second resource, creating a chain
-  depends_on = [null_resource.step_2_framework]
-
-  triggers = {
-    timestamp = timestamp()
-    step      = "completion"
-    order     = 3  # This is step 3
-  }
-
-  provisioner "local-exec" {
-    command = "echo 'Step 3: Project completed'"
-  }
-}
-
-# ============================================================================
-# VALIDATION: Submit your solution to get the flag
-# ============================================================================
-resource "ctfchallenge_flag_validator" "terraform_basics" {
-  # Specify which challenge this is
-  challenge_id = "terraform_basics"
-  
-  # Provide the flag (you know this from the challenge description)
-  flag = "flag{t3rr4f0rm_d3p3nd3nc13s}"
-
-  # PROOF OF WORK: Show that you created the dependency chain
-  # This must be a comma-separated list of your resource IDs
-  proof_of_work = {
-    dependencies = join(",", [
-      null_resource.step_1_foundation.id,
-      null_resource.step_2_framework.id,
-      null_resource.step_3_completion.id,
-    ])
-  }
-}
-
-# ============================================================================
-# OUTPUT: Display the result
-# ============================================================================
-output "challenge_01_result" {
-  description = "Result of Challenge 1"
-  value       = ctfchallenge_flag_validator.terraform_basics.message
-}
-
-output "challenge_01_points" {
-  description = "Points earned"
-  value       = ctfchallenge_flag_validator.terraform_basics.points
 }
 ```
 
----
+Create a `main.tf` file:
 
-### Step 3: Initialize Terraform
+```hcl
+# main.tf
+provider "ctfchallenge" {
+  player_name = "your-name-here"  # Replace with your name!
+}
+```
 
-**Run the initialization command:**
+### 1.3 Initialize Terraform
+
 ```bash
 terraform init
 ```
@@ -189,375 +79,612 @@ Initializing the backend...
 
 Initializing provider plugins...
 - Finding omghozlan/ctfchallenge versions matching "~> 1.0"...
-- Finding hashicorp/null versions matching "~> 3.2"...
 - Installing omghozlan/ctfchallenge v1.0.x...
-- Installing hashicorp/null v3.2.x...
+- Installed omghozlan/ctfchallenge v1.0.x
 
 Terraform has been successfully initialized!
 ```
 
-✅ **Success Indicator:** You see "Terraform has been successfully initialized!"
+✅ **Checkpoint:** If you see "successfully initialized", you're ready to proceed!
 
 ---
 
-### Step 4: Preview Your Solution
+## Step 2: Explore the Challenge
 
-**Run the plan command:**
+### 2.1 Get Challenge Information
+
+Add this to your `main.tf`:
+
+```hcl
+# main.tf (continued)
+
+# Get information about the Terraform Basics challenge
+data "ctfchallenge_challenge_info" "basics" {
+  challenge_id = "terraform_basics"
+}
+
+# Display challenge information
+output "challenge_info" {
+  value = {
+    name        = data.ctfchallenge_challenge_info.basics.name
+    description = data.ctfchallenge_challenge_info.basics.description
+    points      = data.ctfchallenge_challenge_info.basics.points
+    difficulty  = data.ctfchallenge_challenge_info.basics.difficulty
+    category    = data.ctfchallenge_challenge_info.basics.category
+  }
+}
+```
+
+### 2.2 Apply to See Challenge Details
+
 ```bash
-terraform plan
+terraform apply -auto-approve
 ```
 
-**What to Look For:**
-
-You should see Terraform planning to create **4 resources**:
+**Expected Output:**
 ```
-Terraform will perform the following actions:
+Outputs:
 
-  # ctfchallenge_flag_validator.terraform_basics will be created
-  + resource "ctfchallenge_flag_validator" "terraform_basics" {
-      + challenge_id = "terraform_basics"
-      + flag         = (sensitive value)
-      + id           = (known after apply)
-      + message      = (known after apply)
-      + points       = (known after apply)
-      + validated    = (known after apply)
-      ...
-    }
-
-  # null_resource.step_1_foundation will be created
-  + resource "null_resource" "step_1_foundation" {
-      + id       = (known after apply)
-      + triggers = {
-          + "order"     = "1"
-          + "step"      = "foundation"
-          + "timestamp" = "2024-01-15T10:30:00Z"
-        }
-    }
-
-  # null_resource.step_2_framework will be created
-  + resource "null_resource" "step_2_framework" {
-      + id       = (known after apply)
-      + triggers = {
-          + "order"     = "2"
-          + "step"      = "framework"
-          + "timestamp" = "2024-01-15T10:30:00Z"
-        }
-    }
-
-  # null_resource.step_3_completion will be created
-  + resource "null_resource" "step_3_completion" {
-      + id       = (known after apply)
-      + triggers = {
-          + "order"     = "3"
-          + "step"      = "completion"
-          + "timestamp" = "2024-01-15T10:30:00Z"
-        }
-    }
-
-Plan: 4 to add, 0 to change, 0 to destroy.
+challenge_info = {
+  "category" = "fundamentals"
+  "description" = "Understand resource dependencies and outputs"
+  "difficulty" = "beginner"
+  "name" = "Terraform Basics"
+  "points" = 100
+}
 ```
 
-✅ **Success Indicator:** "Plan: 4 to add, 0 to change, 0 to destroy"
+### 2.3 Understanding the Challenge
+
+The challenge requires you to:
+1. Create **at least 3 resources**
+2. Establish **dependencies** between them
+3. Submit the **resource IDs** as proof
+
+💡 **Key Concept:** Terraform's `depends_on` allows you to explicitly define execution order.
 
 ---
 
-### Step 5: Apply Your Solution
+## Step 3: Build Your Solution
 
-**Run the apply command:**
+### 3.1 Create Your First Resource
+
+Add to `main.tf`:
+
+```hcl
+# main.tf (continued)
+
+# Resource 1: The Foundation
+resource "null_resource" "first" {
+  triggers = {
+    name      = "first-resource"
+    timestamp = timestamp()
+  }
+}
+```
+
+**What this does:**
+- Creates a `null_resource` (a placeholder resource perfect for learning)
+- Uses `triggers` to force recreation on each apply
+- This is your **first** resource in the dependency chain
+
+### 3.2 Create a Dependent Resource
+
+Add the second resource:
+
+```hcl
+# main.tf (continued)
+
+# Resource 2: Depends on Resource 1
+resource "null_resource" "second" {
+  depends_on = [null_resource.first]  # 👈 This creates the dependency!
+  
+  triggers = {
+    name      = "second-resource"
+    timestamp = timestamp()
+  }
+}
+```
+
+**Key points:**
+- `depends_on = [null_resource.first]` tells Terraform: "Create `first` before `second`"
+- This creates an **explicit dependency**
+
+### 3.3 Create the Third Resource
+
+Add the third resource:
+
+```hcl
+# main.tf (continued)
+
+# Resource 3: Depends on Resource 2
+resource "null_resource" "third" {
+  depends_on = [null_resource.second]  # 👈 Depends on second
+  
+  triggers = {
+    name      = "third-resource"
+    timestamp = timestamp()
+  }
+}
+```
+
+**Dependency Chain:**
+```
+first → second → third
+```
+
+Terraform will create them in this exact order!
+
+### 3.4 Test Your Resources
+
+Apply your configuration:
+
 ```bash
 terraform apply
 ```
 
-**You'll be prompted to confirm:**
+**Expected Output:**
 ```
+Terraform will perform the following actions:
+
+  # null_resource.first will be created
+  + resource "null_resource" "first" {
+      + id       = (known after apply)
+      + triggers = {
+          + "name"      = "first-resource"
+          + "timestamp" = (known after apply)
+        }
+    }
+
+  # null_resource.second will be created
+  + resource "null_resource" "second" {
+      + id       = (known after apply)
+      + triggers = {
+          + "name"      = "second-resource"
+          + "timestamp" = (known after apply)
+        }
+    }
+
+  # null_resource.third will be created
+  + resource "null_resource" "third" {
+      + id       = (known after apply)
+      + triggers = {
+          + "name"      = "third-resource"
+          + "timestamp" = (known after apply)
+        }
+    }
+
+Plan: 3 to add, 0 to change, 0 to destroy.
+
 Do you want to perform these actions?
-  Terraform will perform the actions described above.
-  Only 'yes' will be accepted to approve.
-
-  Enter a value:
 ```
 
-**Type:** `yes` and press Enter
+Type `yes` and press Enter.
+
+**After Apply:**
+```
+null_resource.first: Creating...
+null_resource.first: Creation complete after 0s [id=1234567890]
+null_resource.second: Creating...
+null_resource.second: Creation complete after 0s [id=2345678901]
+null_resource.third: Creating...
+null_resource.third: Creation complete after 0s [id=3456789012]
+
+Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
+```
+
+✅ **Checkpoint:** Notice the order? They were created exactly as we specified!
 
 ---
 
-### Step 6: Watch the Magic Happen! 🎉
+## Step 4: Submit Proof of Work and Capture the Flag
 
-**During execution, you'll see:**
+### 4.1 Add the Flag Validator
 
+Now for the exciting part - submitting your solution! Add this to `main.tf`:
+
+```hcl
+# main.tf (continued)
+
+# Submit your solution and capture the flag!
+resource "ctfchallenge_flag_validator" "basics" {
+  challenge_id = "terraform_basics"
+  
+  # Proof of work: provide the IDs of your 3 dependent resources
+  proof_of_work = {
+    dependencies = join(",", [
+      null_resource.first.id,
+      null_resource.second.id,
+      null_resource.third.id,
+    ])
+  }
+}
 ```
-null_resource.step_1_foundation: Creating...
-null_resource.step_1_foundation: Provisioning with 'local-exec'...
-null_resource.step_1_foundation (local-exec): Step 1: Foundation laid
-null_resource.step_1_foundation: Creation complete after 1s [id=1234567890]
 
-null_resource.step_2_framework: Creating...
-null_resource.step_2_framework: Provisioning with 'local-exec'...
-null_resource.step_2_framework (local-exec): Step 2: Framework built on foundation
-null_resource.step_2_framework: Creation complete after 1s [id=2345678901]
+**What this does:**
+- References your three resources
+- Joins their IDs into a comma-separated string
+- Submits them as proof that you completed the challenge
 
-null_resource.step_3_completion: Creating...
-null_resource.step_3_completion: Provisioning with 'local-exec'...
-null_resource.step_3_completion (local-exec): Step 3: Project completed
-null_resource.step_3_completion: Creation complete after 1s [id=3456789012]
+### 4.2 Add Outputs to View Results
 
-ctfchallenge_flag_validator.terraform_basics: Creating...
-ctfchallenge_flag_validator.terraform_basics: Creation complete after 0s [id=terraform_basics-1234567890]
+Add outputs to see your results:
 
-Apply complete! Resources: 4 added, 0 changed, 0 destroyed.
+```hcl
+# main.tf (continued)
+
+# View validation results
+output "validation_result" {
+  value = {
+    validated = ctfchallenge_flag_validator.basics.validated
+    message   = ctfchallenge_flag_validator.basics.message
+    points    = ctfchallenge_flag_validator.basics.points
+  }
+}
+
+# 🏴 THE FLAG - Your reward!
+output "captured_flag" {
+  value     = ctfchallenge_flag_validator.basics.flag
+  sensitive = true
+}
+```
+
+### 4.3 Apply and Capture Your Flag
+
+```bash
+terraform apply
+```
+
+**Expected Output:**
+```
+Terraform will perform the following actions:
+
+  # ctfchallenge_flag_validator.basics will be created
+  + resource "ctfchallenge_flag_validator" "basics" {
+      + challenge_id  = "terraform_basics"
+      + flag          = (sensitive value)
+      + id            = (known after apply)
+      + message       = (known after apply)
+      + points        = (known after apply)
+      + timestamp     = (known after apply)
+      + validated     = (known after apply)
+      + proof_of_work = {
+          + "dependencies" = "1234567890,2345678901,3456789012"
+        }
+    }
+
+Plan: 1 to add, 0 to change, 0 to destroy.
+
+Do you want to perform these actions?
+```
+
+Type `yes` and press Enter.
+
+**Success Output:**
+```
+ctfchallenge_flag_validator.basics: Creating...
+
+Warning: Challenge Completed!
+
+You earned 100 points for completing 'Terraform Basics'
+
+ctfchallenge_flag_validator.basics: Creation complete after 0s
+
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 
 Outputs:
 
-challenge_01_result = "🎉 Congratulations! You solved 'Terraform Basics' and earned 100 points!"
-challenge_01_points = 100
+validation_result = {
+  "message" = "🎉 Congratulations! You solved 'Terraform Basics' and earned 100 points!"
+  "points" = 100
+  "validated" = true
+}
 ```
+
+🎉 **SUCCESS!** You've completed the challenge!
 
 ---
 
-### Step 7: Celebrate! 🏆
+## Step 5: View Your Captured Flag
 
-**You'll see the success message:**
+### 5.1 Display the Flag
 
-```
-🎉 Congratulations! You solved 'Terraform Basics' and earned 100 points!
-```
+The flag is marked as sensitive, so use this command:
 
-**View your outputs:**
 ```bash
-terraform output challenge_01_result
+terraform output -raw captured_flag
 ```
 
 **Output:**
 ```
-"🎉 Congratulations! You solved 'Terraform Basics' and earned 100 points!"
+flag{t3rr4f0rm_d3p3nd3nc13s}
+```
+
+🏴 **CONGRATULATIONS!** You've captured your first flag!
+
+### 5.2 Understanding the Flag
+
+- **Format:** `flag{...}` - Standard CTF flag format
+- **Content:** `t3rr4f0rm_d3p3nd3nc13s` - Leetspeak for "terraform dependencies"
+- **Significance:** Proof that you completed the challenge!
+
+### 5.3 Save Your Flag
+
+Create a flags log:
+
+```bash
+echo "Challenge 1 - Terraform Basics: $(terraform output -raw captured_flag)" >> flags.txt
+cat flags.txt
+```
+
+**Output:**
+```
+Challenge 1 - Terraform Basics: flag{t3rr4f0rm_d3p3nd3nc13s}
 ```
 
 ---
 
-## 📊 Verify Your Success
+## 📝 Complete Working Example
 
-### Check Your Progress
+Here's the complete `main.tf` file for reference:
 
-```bash
-terraform output completion_percentage
-```
+```hcl
+# main.tf - Complete Solution for Challenge 1
 
-**If this is your first challenge:**
-```
-"12.5%"
-```
-(1 out of 8 challenges = 12.5%)
+terraform {
+  required_version = ">= 1.0"
 
-### View Detailed Results
+  required_providers {
+    ctfchallenge = {
+      source  = "omghozlan/ctfchallenge"
+      version = "~> 1.0"
+    }
+  }
+}
 
-```bash
-terraform output -json challenge_results | jq
-```
+provider "ctfchallenge" {
+  player_name = "your-name-here"
+}
 
-**You'll see:**
-```json
-{
-  "terraform_basics": {
-    "validated": true,
-    "points": 100,
-    "message": "🎉 Congratulations! You solved 'Terraform Basics' and earned 100 points!"
-  },
-  ...
+# ============================================================================
+# Get Challenge Information
+# ============================================================================
+
+data "ctfchallenge_challenge_info" "basics" {
+  challenge_id = "terraform_basics"
+}
+
+output "challenge_info" {
+  value = {
+    name        = data.ctfchallenge_challenge_info.basics.name
+    description = data.ctfchallenge_challenge_info.basics.description
+    points      = data.ctfchallenge_challenge_info.basics.points
+    difficulty  = data.ctfchallenge_challenge_info.basics.difficulty
+  }
+}
+
+# ============================================================================
+# Solution: Create 3 Dependent Resources
+# ============================================================================
+
+resource "null_resource" "first" {
+  triggers = {
+    name      = "first-resource"
+    timestamp = timestamp()
+  }
+}
+
+resource "null_resource" "second" {
+  depends_on = [null_resource.first]
+  
+  triggers = {
+    name      = "second-resource"
+    timestamp = timestamp()
+  }
+}
+
+resource "null_resource" "third" {
+  depends_on = [null_resource.second]
+  
+  triggers = {
+    name      = "third-resource"
+    timestamp = timestamp()
+  }
+}
+
+# ============================================================================
+# Submit Proof of Work and Capture the Flag
+# ============================================================================
+
+resource "ctfchallenge_flag_validator" "basics" {
+  challenge_id = "terraform_basics"
+  
+  proof_of_work = {
+    dependencies = join(",", [
+      null_resource.first.id,
+      null_resource.second.id,
+      null_resource.third.id,
+    ])
+  }
+}
+
+# ============================================================================
+# Outputs
+# ============================================================================
+
+output "validation_result" {
+  value = {
+    validated = ctfchallenge_flag_validator.basics.validated
+    message   = ctfchallenge_flag_validator.basics.message
+    points    = ctfchallenge_flag_validator.basics.points
+    timestamp = ctfchallenge_flag_validator.basics.timestamp
+  }
+}
+
+output "captured_flag" {
+  description = "🏴 Your captured flag!"
+  value       = ctfchallenge_flag_validator.basics.flag
+  sensitive   = true
+}
+
+output "proof_submitted" {
+  description = "The proof of work you submitted"
+  value = {
+    first_id  = null_resource.first.id
+    second_id = null_resource.second.id
+    third_id  = null_resource.third.id
+    combined  = join(",", [
+      null_resource.first.id,
+      null_resource.second.id,
+      null_resource.third.id,
+    ])
+  }
 }
 ```
 
 ---
 
-## 🔍 Understanding What Happened
+## 🔍 Troubleshooting
 
-### 1. **Resource Creation Order**
+### Problem 1: "Unknown challenge: terraform_basics"
 
-Terraform created your resources in this exact order:
-1. `step_1_foundation` (no dependencies)
-2. `step_2_framework` (depends on #1)
-3. `step_3_completion` (depends on #2)
-4. `flag_validator` (validates your solution)
-
-### 2. **The Proof of Work**
-
-The validator received:
+**Error:**
 ```
-dependencies = "1234567890,2345678901,3456789012"
+Error: Unknown challenge: terraform_basics
 ```
 
-This proves you created 3 resources in a dependency chain.
+**Solution:**
+- Ensure you're using the correct provider version
+- Run `terraform init -upgrade`
 
-### 3. **Flag Validation**
+### Problem 2: "Challenge failed: create at least 3 dependent resources"
 
-The provider checked:
-- ✅ You provided the correct flag: `flag{t3rr4f0rm_d3p3nd3nc13s}`
-- ✅ Your proof of work contains 3 resource IDs
-- ✅ All requirements met → **100 points awarded!**
+**Error:**
+```
+Error: Challenge failed: create at least 3 dependent resources (found 2)
+```
+
+**Solution:**
+- Check that you have exactly 3 resources
+- Ensure the IDs are properly joined with commas
+- Verify all resources are created before the validator
+
+### Problem 3: Flag output shows "(sensitive value)"
+
+**Symptom:**
+```
+captured_flag = <sensitive>
+```
+
+**Solution:**
+Use the `-raw` flag:
+```bash
+terraform output -raw captured_flag
+```
 
 ---
 
 ## 🎓 What You Learned
 
-1. **Resource Dependencies:** How to make one resource wait for another
-2. **depends_on Meta-Argument:** Explicit dependency declaration
-3. **Execution Order:** Terraform respects dependencies when creating resources
-4. **Resource References:** Using `resource_type.resource_name.id` to reference resources
-5. **Provider Interaction:** How to submit solutions to the CTF provider
+By completing this challenge, you now understand:
+
+✅ **Terraform Resource Creation**
+- How to define resources
+- Using `null_resource` for testing
+
+✅ **Dependency Management**
+- Explicit dependencies with `depends_on`
+- How Terraform orders resource creation
+
+✅ **Terraform Functions**
+- `join()` to combine lists into strings
+- Referencing resource attributes
+
+✅ **CTF Paradigm**
+- Completing challenges reveals flags (they're not inputs!)
+- Proof of work validates your solution
+- Flags are your reward for completion
+
+✅ **Terraform Workflow**
+- `terraform init` - Initialize providers
+- `terraform apply` - Create resources
+- `terraform output` - View results
 
 ---
 
-## 🐛 Troubleshooting
+## 🚀 Next Steps
 
-### Problem: "Provider not found"
+Now that you've captured your first flag, try these:
 
-**Solution:**
-```bash
-rm -rf .terraform .terraform.lock.hcl
-terraform init
-```
-
-### Problem: "Challenge failed: create at least 3 dependent resources"
-
-**Check:**
-- You have exactly 3 `null_resource` blocks
-- Each has `depends_on` pointing to the previous one
-- Your `proof_of_work` includes all 3 resource IDs
-
-### Problem: "Incorrect flag"
-
-**Check:**
-- Flag is exactly: `flag{t3rr4f0rm_d3p3nd3nc13s}`
-- No extra spaces or quotes
-- Correct spelling
-
----
-
-## 📁 Complete Working Files
-
-### Minimal Working Example
-
-If you want the absolute minimum code:
-
-**`challenge-01-minimal.tf`:**
+### Challenge 2: Expression Expert (350 points)
+Learn Terraform's expression syntax and functions by computing:
 ```hcl
-resource "null_resource" "a" {}
-
-resource "null_resource" "b" {
-  depends_on = [null_resource.a]
-}
-
-resource "null_resource" "c" {
-  depends_on = [null_resource.b]
-}
-
-resource "ctfchallenge_flag_validator" "terraform_basics" {
-  challenge_id = "terraform_basics"
-  flag         = "flag{t3rr4f0rm_d3p3nd3nc13s}"
-
-  proof_of_work = {
-    dependencies = join(",", [
-      null_resource.a.id,
-      null_resource.b.id,
-      null_resource.c.id,
-    ])
-  }
-}
-
-output "result" {
-  value = ctfchallenge_flag_validator.terraform_basics.message
-}
+base64encode(sha256("terraformexpressionsrock"))
 ```
 
-**Run it:**
-```bash
-terraform init
-terraform apply
-```
+### Challenge 3: State Secrets (200 points)
+Discover the "magic number" (hint: Douglas Adams).
 
-**Result:**
+### Challenge 7: Data Source Detective (150 points)
+Master data source filtering.
+
+---
+
+## 📊 Your Progress
+
 ```
-🎉 Congratulations! You solved 'Terraform Basics' and earned 100 points!
+[█░░░░░░░] 1/8 challenges - 12.5%
+Points: 100/2,250
+
+Captured Flags:
+✅ flag{t3rr4f0rm_d3p3nd3nc13s}
 ```
 
 ---
 
-## 🎯 Next Steps
+## 💡 Pro Tips
 
-Congratulations on completing your first challenge! 🎉
+1. **Use terraform console** to test expressions:
+   ```bash
+   terraform console
+   > null_resource.first.id
+   ```
 
-### Ready for More?
+2. **Save your progress** with version control:
+   ```bash
+   git init
+   git add main.tf
+   git commit -m "Solved Challenge 1: Terraform Basics"
+   ```
 
-Try these challenges next (in order of difficulty):
+3. **Document your flags**:
+   ```bash
+   echo "$(date): Captured flag{t3rr4f0rm_d3p3nd3nc13s}" >> journey.log
+   ```
 
-1. ✅ **Terraform Basics** (100 pts) - COMPLETED!
-2. ⬜ **Data Source Detective** (150 pts) - Beginner
-3. ⬜ **State Secrets** (200 pts) - Beginner  
-4. ⬜ **For-Each Wizard** (250 pts) - Intermediate
-5. ⬜ **Dynamic Blocks** (300 pts) - Intermediate
-6. ⬜ **Expression Expert** (350 pts) - Intermediate
-7. ⬜ **Module Master** (400 pts) - Advanced
-8. ⬜ **Cryptographic Compute** (500 pts) - Advanced
-
-### View All Challenges
-
-```bash
-terraform output all_challenges
-```
-
-### Get Hints (If Stuck)
-
-Edit `terraform.tfvars`:
-```hcl
-enable_hints = true
-hint_levels = {
-  data_source_detective = 0  # Next challenge
-}
-```
+4. **Share your success** (without spoiling the solution):
+   ```
+   🎉 Just captured my first flag in the Terraform CTF Challenge!
+   Challenge: Terraform Basics ✅
+   Points: 100
+   #TerraformCTF #LearningTerraform
+   ```
 
 ---
 
-## 📝 Quick Reference
+## 🎉 Congratulations!
 
-### Essential Commands
+You've successfully:
+- ✅ Set up the Terraform CTF environment
+- ✅ Understood challenge requirements
+- ✅ Built a working solution
+- ✅ Submitted proof of work
+- ✅ **Captured your first flag!**
 
-```bash
-# Initialize
-terraform init
+**You're now a Terraform CTF player!** 🏴‍☠️
 
-# Preview changes
-terraform plan
-
-# Apply solution
-terraform apply
-
-# View outputs
-terraform output challenge_01_result
-terraform output completion_percentage
-
-# Clean up (reset)
-terraform destroy
-```
-
-### File Structure
-
-```
-your-project/
-├── terraform.tfvars              # Your configuration
-├── solutions/
-│   └── challenge-01-terraform-basics.tf  # Your solution
-└── (other files...)
-```
+Ready for the next challenge? The full solution template includes all 8 challenges. Good luck, and happy flag hunting!
 
 ---
 
-## 🏆 Achievement Unlocked!
-
-**🥉 First Steps** - Complete your first Terraform CTF challenge  
-**📚 Dependency Master** - Understand resource dependencies  
-**🎯 100 Points** - 1/8 challenges complete (2,150 points remaining)
-
-Keep going! You're on your way to mastering Terraform! 🚀
-
----
-
-**Need help?** Check the `docs/` folder or enable hints in `terraform.tfvars`!
+**Remember:** In CTF, the flag is your trophy, not your ticket! 🏆

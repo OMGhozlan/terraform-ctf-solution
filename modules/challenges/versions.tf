@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     ctfchallenge = {
-      source = "OMGhozlan/ctfchallenge"
+      source = "omghozlan/ctfchallenge"
     }
     null = {
       source = "hashicorp/null"

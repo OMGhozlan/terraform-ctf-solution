@@ -16,7 +16,7 @@ variable "enable_hints" {
 }
 
 variable "hint_levels" {
-  description = "Map of challenge IDs to hint levels to request"
+  description = "Map of challenge IDs to hint levels to request (0-2)"
   type        = map(number)
   default = {
     terraform_basics      = 0
