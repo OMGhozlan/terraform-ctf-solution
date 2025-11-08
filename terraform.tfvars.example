@@ -1,0 +1,43 @@
+# ============================================================================
+# Terraform CTF Challenge Configuration
+# ============================================================================
+# Copy this file to terraform.tfvars and customize with your settings
+
+# Your player name
+player_name = "Osama Ghozlan"
+
+# Enable/disable hints (costs points)
+enable_hints = false
+
+# Hint levels for each challenge (0-2)
+# Only applies if enable_hints = true
+hint_levels = {
+  terraform_basics      = 0
+  expression_expert     = 0
+  state_secrets         = 0
+  module_master         = 0
+  dynamic_blocks        = 0
+  for_each_wizard       = 0
+  data_source_detective = 0
+  cryptographic_compute = 0
+}
+
+# Enable or disable specific challenges
+# enable_challenges = {
+#   terraform_basics       = true
+#   expression_expert      = false
+#   state_secrets         = true
+#   module_master         = true
+#   dynamic_blocks        = true
+#   for_each_wizard       = true
+#   data_source_detective = false
+#   cryptographic_compute = false
+# }
+
+# Optional tags
+tags = {
+  Project     = "terraform-ctf"
+  Player      = "Osama Ghozlan"
+  ManagedBy   = "terraform"
+  Environment = "learning"
+}
