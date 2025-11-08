@@ -1,3 +1,13 @@
+# ============================================================================
+# Challenge 4: Module Master
+# ============================================================================
+# Objective: Create and use Terraform modules effectively
+# Points: 400
+# Difficulty: Advanced
+#
+# Task: Demonstrate module composition with outputs
+# ============================================================================
+
 module "network_example" {
   count = local.challenges_enabled.module_master ? 1 : 0
 
@@ -21,11 +31,11 @@ resource "null_resource" "module_consumer" {
   }
 }
 
+# Submit proof of work - flag will be revealed upon success!
 resource "ctfchallenge_flag_validator" "module_master" {
   count = local.challenges_enabled.module_master ? 1 : 0
 
   challenge_id = local.challenge_metadata.module_master.id
-  flag         = local.challenge_metadata.module_master.flag
 
   proof_of_work = {
     module_output = "module.network_example[0].vpc_id = ${module.network_example[0].vpc_id}"

@@ -1,3 +1,9 @@
+# ============================================================================
+# CTF Challenge Outputs
+# ============================================================================
+# Flags are revealed here upon successful challenge completion!
+# ============================================================================
+
 # Calculate totals based on enabled challenges only
 locals {
   # Count enabled challenges
@@ -12,6 +18,43 @@ locals {
   ])
 }
 
+# ============================================================================
+# CAPTURED FLAGS - Your Rewards!
+# ============================================================================
+
+output "captured_flags" {
+  description = "🏴 FLAGS CAPTURED - Your hard-earned rewards!"
+  sensitive   = true
+  value = {
+    terraform_basics      = try(module.challenges.captured_flags.terraform_basics, "🔒 Not captured yet")
+    expression_expert     = try(module.challenges.captured_flags.expression_expert, "🔒 Not captured yet")
+    state_secrets         = try(module.challenges.captured_flags.state_secrets, "🔒 Not captured yet")
+    module_master         = try(module.challenges.captured_flags.module_master, "🔒 Not captured yet")
+    dynamic_blocks        = try(module.challenges.captured_flags.dynamic_blocks, "🔒 Not captured yet")
+    for_each_wizard       = try(module.challenges.captured_flags.for_each_wizard, "🔒 Not captured yet")
+    data_source_detective = try(module.challenges.captured_flags.data_source_detective, "🔒 Not captured yet")
+    cryptographic_compute = try(module.challenges.captured_flags.cryptographic_compute, "🔒 Not captured yet")
+    xor_puzzle            = try(module.puzzles.xor_puzzle_secret, "🔒 Not captured yet")
+  }
+}
+
+# Quick view of all captured flags
+output "flag_summary" {
+  description = "Summary of captured flags"
+  sensitive   = true
+  value = {
+    total_flags_available = 9 # 8 challenges + 1 bonus puzzle
+    flags_captured        = module.challenges.flags_captured_count + (module.puzzles.xor_puzzle_solved ? 1 : 0)
+    capture_rate = format("%.1f%%",
+      ((module.challenges.flags_captured_count + (module.puzzles.xor_puzzle_solved ? 1 : 0)) / 9.0) * 100
+    )
+  }
+}
+
+# ============================================================================
+# PROGRESS & SCORING
+# ============================================================================
+
 # Full summary (sensitive because it contains challenge details)
 output "summary" {
   description = "Overall CTF challenge summary"
@@ -22,14 +65,15 @@ output "summary" {
     total_earned               = module.challenges.total_points_earned
     challenges_enabled_count   = local.enabled_challenge_count
     challenges_completed_count = module.challenges.challenges_completed_count
+    flags_captured             = module.challenges.flags_captured_count
     puzzle_solved              = module.puzzles.xor_puzzle_solved
   }
 }
 
 # Public summary (non-sensitive, safe to display)
 output "public_summary" {
+  description = "Public summary of CTF progress"
   sensitive   = true
-  description = "Public summary of CTF progress (non-sensitive)"
   value = {
     player_name           = var.player_name
     total_possible        = local.total_possible_points_enabled
@@ -38,24 +82,25 @@ output "public_summary" {
     challenges_enabled    = local.enabled_challenge_count
     challenges_completed  = module.challenges.challenges_completed_count
     challenges_remaining  = local.enabled_challenge_count - module.challenges.challenges_completed_count
+    flags_captured        = module.challenges.flags_captured_count
     completion_percentage = local.enabled_challenge_count > 0 ? format("%.1f%%", (module.challenges.challenges_completed_count / tonumber(local.enabled_challenge_count)) * 100) : "N/A"
     puzzle_solved         = module.puzzles.xor_puzzle_solved
   }
 }
 
 output "challenge_results" {
-  description = "Detailed results for each challenge"
+  description = "Detailed results for each challenge (includes validation status)"
   sensitive   = true
   value       = module.challenges.challenge_results
 }
 
 output "available_challenges" {
-  description = "List of all available challenges"
+  description = "List of all available challenges from the provider"
   value       = data.ctfchallenge_list.all_challenges.challenges
 }
 
 output "hints" {
-  description = "Requested hints for challenges"
+  description = "Requested hints for challenges (costs points!)"
   value       = var.enable_hints ? module.challenges.hints : {}
 }
 
@@ -69,15 +114,11 @@ output "puzzle_results" {
   }
 }
 
-output "secret_flags" {
-  description = "Secret flags obtained from puzzles"
-  sensitive   = true
-  value = {
-    xor_puzzle = module.puzzles.xor_puzzle_secret
-  }
-}
+# ============================================================================
+# PROGRESS VISUALIZATION
+# ============================================================================
 
-# Completion percentage (non-sensitive, dynamic based on enabled challenges)
+# Completion percentage (dynamic based on enabled challenges)
 output "completion_percentage" {
   description = "Percentage of enabled challenges completed"
   sensitive   = true
@@ -87,7 +128,7 @@ output "completion_percentage" {
   ) : "No challenges enabled"
 }
 
-# Progress bar visualization (dynamic based on enabled challenges)
+# Progress bar visualization
 output "progress_bar" {
   description = "Visual progress bar for enabled challenges"
   sensitive   = true
@@ -101,41 +142,54 @@ output "progress_bar" {
   ) : "No challenges enabled"
 }
 
-# Detailed challenge outputs (non-sensitive)
+# ============================================================================
+# CHALLENGE-SPECIFIC DEBUG INFO
+# ============================================================================
+
 output "expression_computation_steps" {
   description = "Step-by-step computation for Expression Expert challenge"
   value       = module.challenges.expression_computation_steps
 }
 
 output "state_secrets_info" {
-  value = module.challenges.state_secrets_info
+  description = "Information about State Secrets challenge"
+  value       = module.challenges.state_secrets_info
 }
 
 output "module_master_info" {
-  value = module.challenges.module_master_info
+  description = "Information about Module Master challenge"
+  value       = module.challenges.module_master_info
 }
 
 output "dynamic_blocks_info" {
-  value = module.challenges.dynamic_blocks_info
+  description = "Information about Dynamic Blocks challenge"
+  value       = module.challenges.dynamic_blocks_info
 }
 
 output "foreach_wizard_info" {
-  value = module.challenges.foreach_wizard_info
+  description = "Information about For-Each Wizard challenge"
+  value       = module.challenges.foreach_wizard_info
 }
 
 output "data_source_detective_info" {
-  value = module.challenges.data_source_detective_info
+  description = "Information about Data Source Detective challenge"
+  value       = module.challenges.data_source_detective_info
 }
 
 output "cryptographic_compute_info" {
-  value = module.challenges.cryptographic_compute_info
+  description = "Information about Cryptographic Compute challenge"
+  value       = module.challenges.cryptographic_compute_info
 }
 
 output "xor_puzzle_info" {
-  value = module.puzzles.xor_puzzle_info
+  description = "Information about XOR puzzle"
+  value       = module.puzzles.xor_puzzle_info
 }
 
-# Score breakdown (non-sensitive, dynamic based on enabled challenges)
+# ============================================================================
+# SCORING BREAKDOWN
+# ============================================================================
+
 output "score_breakdown" {
   description = "Points breakdown by difficulty (enabled challenges only)"
   value = {
@@ -184,7 +238,7 @@ output "score_breakdown" {
   }
 }
 
-# Challenge status (non-sensitive, shows only enabled challenges)
+# Challenge status
 output "challenge_status" {
   description = "Status of enabled challenges"
   value = {
@@ -242,6 +296,11 @@ output "statistics" {
       completed       = module.challenges.challenges_completed_count
       remaining       = local.enabled_challenge_count - module.challenges.challenges_completed_count
     }
+    flags = {
+      total_available = 9 # 8 challenges + 1 bonus
+      captured        = module.challenges.flags_captured_count + (module.puzzles.xor_puzzle_solved ? 1 : 0)
+      remaining       = 9 - (module.challenges.flags_captured_count + (module.puzzles.xor_puzzle_solved ? 1 : 0))
+    }
     points = {
       maximum_possible_all = local.total_possible_points
       possible_enabled     = local.total_possible_points_enabled
@@ -265,3 +324,10 @@ output "statistics" {
     }
   }
 }
+
+# ============================================================================
+# HOW TO VIEW YOUR CAPTURED FLAGS
+# ============================================================================
+# Run: terraform output -json captured_flags | jq -r
+# Or for a specific flag: terraform output -json captured_flags | jq -r '.terraform_basics'
+# ============================================================================

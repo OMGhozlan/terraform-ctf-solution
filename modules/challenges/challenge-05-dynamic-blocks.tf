@@ -1,3 +1,13 @@
+# ============================================================================
+# Challenge 5: Dynamic Blocks
+# ============================================================================
+# Objective: Master dynamic block generation
+# Points: 300
+# Difficulty: Intermediate
+#
+# Task: Generate at least 5 dynamic blocks
+# ============================================================================
+
 resource "null_resource" "dynamic_blocks_demo" {
   count = local.challenges_enabled.dynamic_blocks ? 1 : 0
 
@@ -20,11 +30,11 @@ resource "null_resource" "port_rules" {
   }
 }
 
+# Submit proof of work - flag will be revealed upon success!
 resource "ctfchallenge_flag_validator" "dynamic_blocks" {
   count = local.challenges_enabled.dynamic_blocks ? 1 : 0
 
   challenge_id = local.challenge_metadata.dynamic_blocks.id
-  flag         = local.challenge_metadata.dynamic_blocks.flag
 
   proof_of_work = {
     dynamic_block_count = tostring(local.dynamic_block_count)

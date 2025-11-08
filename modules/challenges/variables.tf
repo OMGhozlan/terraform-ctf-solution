@@ -4,11 +4,10 @@ variable "challenges_enabled" {
 }
 
 variable "challenge_metadata" {
-  description = "Metadata for all challenges"
+  description = "Metadata for all challenges (WITHOUT flags - those are rewards!)"
   type = map(object({
     id         = string
     name       = string
-    flag       = string
     points     = number
     difficulty = string
     category   = string
