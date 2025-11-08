@@ -95,10 +95,10 @@ locals {
 
   # XOR puzzle solution
   xor_puzzle_solution = {
-    input_1 = "15"
-    input_2 = "23"
-    input_3 = "42"
-    input_4 = "37"
-    input_5 = "11"
+    input_1 = "0"
+    input_2 = "2"
+    input_3 = "3"
+    input_4 = "4"
+    input_5 = "5"
   }
 }

@@ -13,7 +13,7 @@ output "xor_puzzle_secret" {
 
 output "xor_puzzle_info" {
   value = {
-    input_numbers = [15, 23, 42, 37, 11]
+    input_numbers = var.xor_solution
     solved        = try(ctfchallenge_puzzle_box.xor_puzzle.solved, false)
     message       = try(ctfchallenge_puzzle_box.xor_puzzle.message, "Not attempted")
   }
