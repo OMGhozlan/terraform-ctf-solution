@@ -37,7 +37,9 @@ locals {
     web_server_1     = { type = "compute", environment = "prod", active = true }
     web_server_2     = { type = "compute", environment = "prod", active = true }
     db_server_1      = { type = "database", environment = "prod", active = true }
+    db_server_2      = { type = "database", environment = "prod", active = true }
     cache_server_1   = { type = "cache", environment = "prod", active = true }
+    cache_server_2   = { type = "cache", environment = "prod", active = true }
     web_server_dev_1 = { type = "compute", environment = "dev", active = true }
     db_server_dev_1  = { type = "database", environment = "dev", active = true }
     cache_server_dev = { type = "cache", environment = "dev", active = true }
